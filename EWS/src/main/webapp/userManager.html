@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>用户管理</title>
+    <link rel="stylesheet" href="layui/css/layui.css"/>
+    <script type="text/javascript" src="jquery3.4.1/jquery-3.4.1.js"></script>
+    <script type="text/javascript" src="layui/layui.all.js"></script>
+    <script type="text/javascript">
+        $(function () {                   /*页面执行时调用*/
+            loadUserData();
+        });
+        function loadUserData() {
+            var table = layui.table; //执行渲染
+            table.render({
+                toolbar:"#toolbar",
+                elem: '#userInfoList' //指定原始表格元素选择器（推荐id选择器）
+                ,
+                url:"user/findAllUser.do",
+                title:"用户信息表",
+                /*where:{
+                    "page":1,
+                    "limit":10
+                },*/
+                page:true,//开启分页
+                event:true,
+                size:"md",
+
+                // limit:5,//每页长度
+                loading:true,
+                limits:[10,20,50],
+                // height: 315 //容器高度
+                cols: [
+                    [
+                        {
+                            field:"",
+                            title:"ID",
+                            type:"numbers"
+                        },
+                        {
+                            field:"uname"  ,
+                            title:"用户名",
+                            align:"center"
+                        },
+                        {
+                            field:"role"  ,
+                            title:"角色",
+                            align:"center"
+                        },
+                        {
+                            field:"email"  ,
+                            title:"邮箱",
+                            align:"center"
+                        },
+                        {
+                            field:"registerTime"  ,
+                            title:"注册时间",
+                            align:"center"
+                        },
+                        {
+                            field:"lastLoginTime",
+                            title:"最后登录时间",
+                            align:"center"
+                        },
+                        {
+                            field:"id",
+                            title:"操作",
+                            align:"center",
+                            templet:function (row) {
+                                var edit= "<a href='' title='编辑'><span style='font-size: 20px;color:blue' class='layui-icon layui-icon-util'></span></a>"
+                                var del= "<a href='' title='删除'><span style='font-size: 20px;color:blue' class='layui-icon layui-icon-delete'></span></a>"
+                                return edit +" "+ del;
+                            }
+                        }
+                    ]
+                ] //设置表头
+                //,…… //更多参数参考右侧目录：基本参数选项
+            });
+            /*$.ajax({                       /!*用来向服务器请求数据*!/
+                url:"user/findAllUser.do",
+                data:{
+                    "page":0,
+                    "pageSize":10,
+
+                },
+                method:"get",
+                success:function (result) {
+                    layer.msg(result);
+            },
+            error:function(){
+                layer.msg("请求服务器失败!");
+            }
+
+            });*/
+        }
+    </script>
+</head>
+<body>
+<div class="layui-elem-quote">
+    用户管理功能
+</div>
+<script type="text/html" id="toolbar">
+<a href="" class="layui-btn layui-btn-danger" >添加用户</a>
+<a href="" class="layui-btn layui-btn-warm" >删除用户</a>
+<input class="layui-input-block" type="text" placeholder="输入要查询的信息">
+    <a href=""><span class="layui-btn layui-icon-search"></span></a>
+</script>
+<table class="layui-table" id="userInfoList">
+
+
+</table>
+</body>
+</html>
+
+
+<!--<tr>
+        <td></td>
+        <td>用户名</td>
+        <td>邮箱</td>
+        <td>角色</td>
+        <td>注册时间</td>
+        <td>最晚登录时间</td>
+        <td>操作</td>
+    </tr>
+    <tbody id="tb_body">
+
+    </tbody>
+    <tr>
+        <td><input type="checkbox"></td>
+        <td>user1</td>
+        <td>user1@qq.com</td>
+        <td>emplyee</td>
+        <td>2019-5-22</td>
+        <td>2019-5-22</td>
+        <td>
+            <a href="" title="删除"><span class="layui-icon layui-icon-delete"></span></a>
+            <a href="" title="修改"><span class="layui-icon layui-icon-edit"></span></a>
+        </td>
+    </tr>-->

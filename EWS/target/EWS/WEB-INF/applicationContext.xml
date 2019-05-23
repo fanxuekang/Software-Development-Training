@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
+    <!--开启注解-->
+    <context:annotation-config/>
+    <context:component-scan base-package="com.isoft.service.impl,com.isoft.dao.impl"/>
+    <!--mybatis整合-->
+    <!--加载jdbc配置文件-->
+<context:property-placeholder location="classpath*:jdbcConfig.properties"/>
+    <!--配置数据源-->
+    <!--数据库8.0-->
+    <!--<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">-->
+        <!--<property name="driverClassName" value="com.mysql.cj.jdbc.Driver"/>-->
+        <!--&lt;!&ndash;不同数据库端口号4033 1521(oracle)&ndash;&gt;-->
+        <!--<property name="url" value="jdbc:mysql://localhost:3306/wyx?serverTimezone=UTC"/>-->
+        <!--<property name="username" value="root"/>-->
+        <!--<property name="password" value="1234"/>-->
+    <!--</bean>-->
+    <!--数据库5.0-->
+    <bean id="dataSource1" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="${jdbc.driverClassName}"/>
+        <!--不同数据库端口号4033 1521(oracle)-->
+        <property name="url" value="${jdbc.url}"/>
+        <property name="username" value="${jdbc.username}"/>
+        <property name="password" value="${jdbc.password}"/>
+    </bean>
+    <!--创建sqlSessionFactoryBean对象-->
+    <bean id="sessionFactoryBean" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource1" />
+        <property name="mapperLocations" value="classpath*:**/*Mapper.xml"/>
+    </bean>
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource1"/>
+    </bean>
+</beans>
