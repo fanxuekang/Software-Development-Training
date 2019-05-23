@@ -8,4 +8,6 @@ public interface IUserService {
     boolean register(String uname,String upwd,String email);
     List<Map<String,Object>> findAllUser(int page, int pageSize);
     Map<String ,Object> findUserCount();
+    int deleteUserInfoById(int id);
+    List<Map<String, Object>> userTotal();
 }

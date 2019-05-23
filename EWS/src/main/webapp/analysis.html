@@ -3,8 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link rel="stylesheet" href="layui/css/layui.css"/>
+    <script type="text/javascript" src="jquery3.4.1/jquery-3.4.1.js"></script>
+    <script type="text/javascript" src="layui/layui.all.js"></script>
+    <script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="echarts/echarts.min.js"></script>
+
+    <script type="text/javascript">
+        // import * as echarts from "./echarts/echarts";
+
+        $(function () {
+            bar();
+        });
+        function bar() {
+            $.ajax({
+               url:"user/userTotal.do",
+               success:function (data) {
+                   var result=JSON.parse(data);
+                   var mychart=echarts.init(document.getElementById("bar"));
+                   // 指定图表的配置项和数据
+                   var option = {
+                       title: {
+                           text: '用户角色分析'
+                       },
+                       tooltip: {},
+                       legend: {
+                           data:['数量']
+                       },
+                       xAxis: {
+                           data: result.roleList
+                       },
+                       yAxis: {},
+                       series: [{
+                           name: '销量',
+                           type: 'bar',
+                           data: result.countList
+                       }]
+                   };
+                   mychart.setOption(option);
+               } ,
+                error:function () {
+                    layer.msg("服务器请求失败！");
+                }
+            });
+
+        }
+    </script>
 </head>
 <body>
-analysis
+<div class="row">
+    <div class="layui-col-xs6">
+        <div class="layui-card">
+            <div class="layui-card-header">
+                角色数量统计-柱状图
+            </div>
+            <div class="layui-card-body" id="bar" style="background-color:gray;height: 400px;width: 100%">
+            </div>
+        </div>
+    </div>
+    <div class="layui-col-xs6">
+        <div class="layui-card">
+            <div class="layui-card-header">
+                角色数量统计-柱状图
+            </div>
+            <div class="layui-card-body" id="bar1" style="background-color:orange;height: 400px;width: 100%">
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="layui-col-xs6">
+        4234
+    </div>
+    <div class="layui-col-xs6">
+        423423
+    </div>
+</div>
 </body>
 </html>

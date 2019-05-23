@@ -34,4 +34,15 @@ public class UserServiceImpl implements IUserService{
     public Map<String, Object> findUserCount() {
         return userDAO.findUserCount();
     }
+
+    @Override
+    public int deleteUserInfoById(int id) {
+        return userDAO.deleteUserInfoById(id);
+    }
+
+    @Override
+    public List<Map<String, Object>> userTotal() {
+
+        return userDAO.userTotal();
+    }
 }

@@ -15,4 +15,17 @@
     <select id="findUserCount" resultType="map">
         SELECT COUNT(*) AS `count` FROM tb_user;
     </select>
+    <delete id="deleteUserInfoById" parameterType="int">
+        delete from tb_user where id=#{id}
+    </delete>
+
+    <select id="userTotal" resultType="map">
+        SELECT
+        case
+        when role='employee' then '部门员工'
+        when role='admin' then '管理员'
+        when role='checker' then '检修员'
+        END as role
+        ,COUNT(*) as count FROM tb_user GROUP BY role
+    </select>
 </mapper>

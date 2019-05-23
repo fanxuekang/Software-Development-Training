@@ -63,8 +63,34 @@ public class UserDAOImpl implements IUserDAO{
             SqlSession sqlSession = sessionFactoryBean.openSession(true);
             String statment="com.isoft.mapping.userMapper.findUserCount";
             Map map=sqlSession.selectOne(statment);
-            System.out.println(map);
             return map;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+
+    }
+
+    @Override
+    public int deleteUserInfoById(int id) {
+        try{
+            SqlSession sqlSession = sessionFactoryBean.openSession(true);
+            String statment="com.isoft.mapping.userMapper.deleteUserInfoById";
+            int i=sqlSession.delete(statment,id);
+            return i;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    @Override
+    public List<Map<String, Object>> userTotal() {
+        try{
+            SqlSession sqlSession = sessionFactoryBean.openSession(true);
+            String statment="com.isoft.mapping.userMapper.userTotal";
+            List<Map<String,Object>> list=sqlSession.selectList(statment);
+            return list;
         }catch (Exception e){
             e.printStackTrace();
         }
