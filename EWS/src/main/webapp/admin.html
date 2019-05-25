@@ -8,6 +8,15 @@
     <script type="text/javascript" src="jquery3.4.1/jquery-3.4.1.js"></script>
     <script type="text/javascript" src="layui/layui.all.js"></script>
     <script type="text/javascript">
+        $(function () {
+            if(sessionStorage.getItem("uname")==null){
+                layer.msg("非法用户，请登录!");
+                setInterval("  window.location.href=\"index.html\"",2000)
+            }else{
+                 var uname=sessionStorage.getItem("uname");
+                  $("#loginName").html(uname)
+            }
+        });
         //JavaScript代码区域
         function loadUserManagerPage() {
             $("#mainFrame").load("userManager.html");
@@ -15,25 +24,11 @@
         function loadAnalysisPage() {
             $("#mainFrame").load("analysis.html");
         }
-        /*function exit() {
-
-            layer.confirm("是否确认退出？",{title:"退出提示",btn:["残忍离开","继续使用"]},function(index){
-
-                // alert(index);
-                if(index==2) {
-                    window.location.href = "index.html";
-                }
-
-
-            })
-        }*/
 
         function exit() {
             layer.confirm("是否真的退出系统？",{title:"退出提示",btn:["残忍离开","继续使用"]},function (index){
-
-                if(index){
+                        sessionStorage.clear();
                     window.location.href="index.html";
-                }
             })
 
         }
@@ -44,25 +39,11 @@
 <div class="layui-layout layui-layout-admin">
     <div class="layui-header">
         <div class="layui-logo">医疗设备预警系统管理</div>
-       <!-- &lt;!&ndash; 头部区域（可配合layui已有的水平导航） &ndash;&gt;
-        <ul class="layui-nav layui-layout-left">
-            <li class="layui-nav-item"><a href="">控制台</a></li>
-            <li class="layui-nav-item"><a href="">商品管理</a></li>
-            <li class="layui-nav-item"><a href="">用户</a></li>
-            <li class="layui-nav-item">
-                <a href="javascript:;">其它系统</a>
-                <dl class="layui-nav-child">
-                    <dd><a href="">邮件管理</a></dd>
-                    <dd><a href="">消息管理</a></dd>
-                    <dd><a href="">授权管理</a></dd>
-                </dl>
-            </li>
-        </ul>-->
         <ul class="layui-nav layui-layout-right">
             <li class="layui-nav-item">
                 <a href="javascript:;">
                     <img src="http://t.cn/RCzsdCq" class="layui-nav-img">
-                    admin
+                    <label id="loginName"></label>
                 </a>
                 <dl class="layui-nav-child">
                     <dd><a href=""><span class="layui-icon layui-icon-auz"></span> 个人中心</a></dd>

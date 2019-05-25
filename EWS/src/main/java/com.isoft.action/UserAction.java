@@ -53,12 +53,23 @@ public class UserAction {
 
     @RequestMapping("/deleteUserInfoById.do")
     @ResponseBody
-    public String deleteUserInfoById(int id){
+    public String deleteUserInfoById(String id){
+        System.out.println(id);
      String result="success";
-        int i =userService.deleteUserInfoById(id);
-        if(i==0){
+     int i=0;
+     try{
+         String[] arr=id.split(",");
+         for(String index:arr){
+             i=userService.deleteUserInfoById(Integer.parseInt(index));
+             System.out.println("正在删除第"+index+"条");
+         }
+     }catch (Exception e){
+         i=0;
+         e.printStackTrace();
+     }
+
+        if(i==0)
             result="fault";
-        }
         return result;                       /*返回json格式数据，但是不能转换，因为找不到json消息转化器*/
     }
 
@@ -81,5 +92,8 @@ public class UserAction {
         System.out.println(map);
         return map ;
     }
+
+
+
 }
 

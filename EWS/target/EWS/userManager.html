@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">-->
     <title>用户管理</title>
     <link rel="stylesheet" href="layui/css/layui.css"/>
     <script type="text/javascript" src="jquery3.4.1/jquery-3.4.1.js"></script>
@@ -25,10 +25,17 @@
 
                  area:['400px','350px'],
                  yes:function (index) {
-                     layer.msg("test");
+                     // layer.msg("test");
+                 },
+                 success: function () {
+
+                     layui.use("form",function () {
+                         layui.form.render();
+                     });
+                     $("#uname").val(uname);
+                     $("#lbl_title").html("修改用户信息");
                  }
              });
-
             }
         function deleteUserInfoById(id) {
             layer.confirm("是否确定删除?",{icon:3,title:"警告"},function (index) {
@@ -57,11 +64,12 @@
 
         }
         function loadUserData() {
-            var table = layui.table; //执行渲染
+            var table = layui.table; //定义使用的实例
+            var util=layui.util;
             table.render({
                 toolbar:"#toolbar",
-                elem: '#userInfoList' //指定原始表格元素选择器（推荐id选择器）
-                ,
+                elem: "#userInfoList", //指定原始表格元素选择器（推荐id选择器）
+                id:"userInfoTable",
                 url:"user/findAllUser.do",
                 title:"用户信息表",
                 id:"userInfoTable",
@@ -80,19 +88,33 @@
                 cols: [
                     [
                         {
-                            field:"",
+                            field:"id",
+                            title:"ID",
+                            type:"checkbox"
+                        },
+                        {
+                            field:"id",
                             title:"ID",
                             type:"numbers"
                         },
                         {
                             field:"uname"  ,
                             title:"用户名",
-                            align:"center"
+                            align:"center",
+                            edit:true
                         },
                         {
                             field:"role"  ,
                             title:"角色",
-                            align:"center"
+                            align:"center",
+                            templet:function (row){
+                                if(row.role=="admin")
+                                    return "管理员";
+                                if(row.role=="checker")
+                                    return "检修员";
+                                if(row.role=="employee")
+                                    return "职员";
+                            }
                         },
                         {
                             field:"email"  ,
@@ -102,23 +124,25 @@
                         {
                             field:"registerTime"  ,
                             title:"注册时间",
-                            align:"center"
+                            align:"center",
+                            templet:function (row) {
+                                return util.toDateString(row.registerTime,"yyyy-MM-dd HH:mm:ss");
+                            }
+
                         },
                         {
                             field:"lastLoginTime",
                             title:"最后登录时间",
-                            align:"center"
+                            align:"center",
+                            templet:function (row) {
+                                return util.toDateString(row.lastLoginTime,"yyyy-MM-dd HH:mm:ss");
+                            }
                         },
                         {
                             field:"id",
                             title:"操作",
                             align:"center",
                             templet:function (row) {
-                                /*var arr=Array();
-                                arr[0]=row.id;
-                                arr[1]=row.uname;
-                                arr[2]=row.email;
-                                arr[3]=row.role;*/
                                 var edit= '<a href="javascript:openUserInfoEdit(' + row.id+",'"+row.uname+"','"+row.role+"','"+row.email + '\');" title="编辑">'+
                                     '<span style="font-size: 25px;color:blue" class="layui-icon layui-icon-util"></span></a>'
 
@@ -132,22 +156,62 @@
                 ] //设置表头
                 //,…… //更多参数参考右侧目录：基本参数选项
             });
-            /*$.ajax({                       /!*用来向服务器请求数据*!/
-                url:"user/findAllUser.do",
-                data:{
-                    "page":0,
-                    "pageSize":10,
 
-                },
-                method:"get",
-                success:function (result) {
-                    layer.msg(result);
-            },
-            error:function(){
-                layer.msg("请求服务器失败!");
-            }
+            layui.table.on("toolbar(userTable)",function (rs) {
+                var event=rs.event;
+                if (event == "add") {
 
-            });*/
+                    layer.open({
+                        type: 1,
+                        title: "添加用户信息",
+                        btn: ["确认添加", "取消"],
+                        content: $("#editUserInfo").html(),
+                        area: ['400px', '350px'],
+                        yes: function (index) {
+                        },
+                        success:function () {
+                            $("#lbl_title").html("添加用户信息");
+                            layui.use("form",function () {
+                                layui.form.render();
+                            })
+                        }
+                    });
+                }
+                if (event == "delete") {
+                    var list = layui.table.checkStatus("userInfoTable").data;
+
+                    if (list.length == 0) {
+                        layer.msg("请选择您要删除的数据");
+                    }else
+                    {
+                        layer.confirm("是否删除选中的数据?",{btn:["确定","取消"]},function () {
+                            layer.closeAll();
+                            var arr=new Array();
+                            $.each(list,function (index,row) {
+                                arr[index]=row.id;
+                            });
+
+                            $.ajax({
+                                url:"user/deleteUserInfoById.do",
+                                data:{"id":arr.join(",").toString()},
+                                method:"post",
+                                success:function (result) {
+                                    if(JSON.parse(result) == "success"){
+                                        layer.msg("删除成功！");
+                                        layui.table.reload("userInfoTable");
+                                    }
+                                    else
+                                        layer.msg("删除失败！");
+
+                                },
+                                error:function () {
+                                    layer.msg("请求服务器失败?");
+                                }
+                            });
+                        })
+                    }
+                }
+            });
         }
     </script>
 </head>
@@ -156,16 +220,14 @@
     用户管理功能
 </div>
 <script type="text/html" id="toolbar">
-<a href="" class="layui-btn layui-btn-danger" >添加用户</a>
-<a href="" class="layui-btn layui-btn-warm" >删除用户</a>
-<input class="layui-input-block" type="text" placeholder="输入要查询的信息">
+    <button class="layui-btn layui-btn-danger" lay-event="add"><i class="layui-icon">&#xe640</i> 添加用户</button>
+    <a href="javascript:void(0)" class="layui-btn layui-btn-warm" lay-event="delete">
+        <i class="layui-icon layui-icon-delete"></i> 删除用户</a>
+    <input class="layui-input-block" type="text" placeholder="请输入要查询的信息">
     <a href="" class="layui-btn layui-btn-warm">
-        <span class=" layui-icon  layui-icon-search"></span></a>
-
+        <span class="layui-icon layui-icon-search"></span></a>
 </script>
-<table class="layui-table" id="userInfoList">
-
-
+<table class="layui-table" id="userInfoList" lay-filter="userTable">
 </table>
 
 

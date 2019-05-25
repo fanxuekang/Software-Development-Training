@@ -23,8 +23,11 @@ public class UserDAOImpl implements IUserDAO{
         map.put("uname",uname);
         map.put("upwd",upwd);
         List<Map<String,Object>> list = sqlSession.selectList(statment,map);
-        if(list.size()>0)
+        if(list.size()>0) {
+            String statment1 = "com.isoft.mapping.userMapper.updateLoginTime";
+            sqlSession.update(statment1, uname);
             return "success";
+        }
         else
             return "fault";
 
